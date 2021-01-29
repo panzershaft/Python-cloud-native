@@ -3,7 +3,8 @@ Simple python code, which can be deployed on a kuberenetes environment
 
 ## Pre-requisites 
 
-- Need a running Docker, and Kubernetes cluster through Docker desktop app, if running on windows
+- Need a running Docker, and Kubernetes cluster through Docker desktop app, if running on windows.
+- May need to install either kind or minikube, but the docker desktop one should do just fine.
   
 ## Executing the application
 - Build the image through: 
