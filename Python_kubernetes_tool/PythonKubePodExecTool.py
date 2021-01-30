@@ -3,6 +3,7 @@ import stat
 import sys
 
 from kubernetes import client, config
+from kubernetes.client import ApiException
 from kubernetes.stream import stream
 import subprocess
 
@@ -18,6 +19,16 @@ class PythonKubePodExecTool(object):
         self.v1 = client.CoreV1Api()
         self.pod_list = []
 
+    def read_namespaced_pod(self,pod_name, name_space="default"):
+        try:
+            resp = self.v1.read_namespaced_pod(pod_name,name_space)
+            print(resp)
+            return True
+        except ApiException as e:
+            if e.status != 404:
+                print("Unknown error: %s" % e)
+                exit(1)
+
     def list_all_pods_all_namespaces(self):
         print("\nListing all the pods\n")
         data = self.v1.list_pod_for_all_namespaces(watch=False)
@@ -28,6 +39,9 @@ class PythonKubePodExecTool(object):
 
     def list_available_pods_namespaces(self):
         print("\nSELECT FROM THE FOLLOWING PODS, NAMESPACES")
+        if self.pod_list:
+            print(tabulate(self.pod_list, headers=['IP', 'NAMESPACE', 'POD_NAME']))
+            return True
         self.list_all_pods_all_namespaces()
         return True
 
@@ -77,8 +91,11 @@ class PythonKubePodExecTool(object):
             resp.close()
             return resp
 
-        except Exception as e:
-            return "Exception caught"
+        except ApiException as e:
+            if e.status != 404:
+                print("Unknown error: %s" % e)
+
+                exit(1)
 
 
 def main():
@@ -99,7 +116,8 @@ def main():
         print("\n")
 
         cprint("1. List all pods of all namespaces", 'blue', attrs=['bold'], file=sys.stderr)
-        cprint("2. Exec into a particular pod", 'blue', attrs=['bold'], file=sys.stderr)
+        cprint("2. Show pod data", 'blue', attrs=['bold'], file=sys.stderr)
+        cprint("3. Exec into a particular pod", 'blue', attrs=['bold'], file=sys.stderr)
         cprint("0. TO EXIT", 'blue', attrs=['bold'], file=sys.stderr)
 
         num = input("\nEnter number: ")
@@ -108,6 +126,14 @@ def main():
             obj.list_all_pods_all_namespaces()
 
         if num == '2':
+            obj.list_available_pods_namespaces()
+            pod_name = input("\nEnter the pod to exec: ")
+            namespace = input("\nEnter the Namespace of the pod: ")
+            if not namespace:
+                namespace="default"
+            obj.read_namespaced_pod(pod_name, namespace)
+
+        if num == '3':
             obj.list_available_pods_namespaces()
             pod_name = input("\nEnter the pod to exec: ")
             cmd = input("\nEnter the command to exec: ")
