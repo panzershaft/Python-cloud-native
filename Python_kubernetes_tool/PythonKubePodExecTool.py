@@ -60,7 +60,7 @@ class PythonKubePodExecTool(object):
 
 def main():
     os.chmod("run.sh", stat.S_IEXEC)
-    
+
     with open('run.sh', 'rb') as file:
         script = file.read()
     subprocess.call(script, shell=True)
