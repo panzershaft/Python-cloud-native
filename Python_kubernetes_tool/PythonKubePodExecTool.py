@@ -1,5 +1,9 @@
+import os
+import stat
+
 from kubernetes import client, config
 from kubernetes.stream import stream
+import subprocess
 
 
 class PythonKubePodExecTool(object):
@@ -55,9 +59,16 @@ class PythonKubePodExecTool(object):
 
 
 def main():
+    os.chmod("run.sh", stat.S_IEXEC)
+    
+    with open('run.sh', 'rb') as file:
+        script = file.read()
+    subprocess.call(script, shell=True)
+
     obj = PythonKubePodExecTool()
     obj.list_all_pods_all_namespaces()
     obj.exec_in_pod("api-pod", "default", "python --version")
+
 
 if __name__ == '__main__':
     main()
