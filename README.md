@@ -14,86 +14,29 @@ Simple python code, which can be deployed on a kuberenetes environment
   3. Python kubernetes tool (for testing your cloud-native environment)
     
 ### 1. EXECUTING FLASK APPLICATION
-- Go to the django_project directory: 
+- **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo 
+  ( you can build, run and push the image in your own Docker hub repo and make the necessary changes in the pod.yaml)
 ````buildoutcfg
 cd flask_app
-````
-
-- Build the image through: 
-````buildoutcfg
-docker build -t hello-api .
-````
-
-- Spin up the container: 
-````buildoutcfg
-docker run -p 3050:3111 hello-api
-````
-
-- **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo
-
-- Initialize pod:
-````buildoutcfg
 kubectl apply -f pod.yaml
-````
-
-- Initialize NodePort:
-````buildoutcfg
 kubectl apply -f nodeport.yaml
-````
-
-- Check your pod:
-````buildoutcfg
 kubectl get pods
-````
-
-- Check your service:
-````buildoutcfg
 kubectl get services
+http://localhost:32000/
 ````
-
-- If you pod and service is **running**, you can access you api:
-``http://localhost:32000/``
 
 ### 2. EXECUTING DJANGO APPLICATION
-- Go to the django_project directory: 
+- **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo 
+  ( you can build, run and push the image in your own Docker hub repo and make the necessary changes in the pod.yaml)
 ````buildoutcfg
 cd django_project
-````
-
-- Build the image through: 
-````buildoutcfg
-docker build -t django-image .
-````
-- Run locally first: 
-````buildoutcfg
-docker run -p 80:8000 django-image
-http://localhost/
-````
-- **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo
-
-- Initialize pod:
-````buildoutcfg
 kubectl apply -f pod.yaml
-````
-
-- Initialize NodePort:
-````buildoutcfg
 kubectl apply -f nodeport.yaml
-````
-
-- Check your pod:
-````buildoutcfg
 kubectl get pods
-````
-
-- Check your service:
-````buildoutcfg
 kubectl get services
+http://localhost:31000/
 ````
 
-- If you pod and service is **running**, you can access you api:
-``http://localhost:31000/``
-  
 ### 3. EXECUTING PYTHON KUBERNETES TOOL
 
 - Ensure you have kubernetes library of python installed: https://github.com/kubernetes-client/python
