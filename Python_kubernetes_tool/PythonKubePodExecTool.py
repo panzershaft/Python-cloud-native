@@ -1,9 +1,13 @@
 import os
 import stat
+import sys
 
 from kubernetes import client, config
 from kubernetes.stream import stream
 import subprocess
+
+from colorama import Fore, Back, Style
+from termcolor import colored, cprint
 
 
 class PythonKubePodExecTool(object):
@@ -13,7 +17,8 @@ class PythonKubePodExecTool(object):
         self.v1 = client.CoreV1Api()
 
     def list_all_pods_all_namespaces(self):
-        print("Listing all the pods")
+        print("\nListing all the pods\n")
+        print("\033[1;32;40m \n")
         data = self.v1.list_pod_for_all_namespaces(watch=False)
         for i in data.items:
             print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
@@ -35,16 +40,18 @@ class PythonKubePodExecTool(object):
             usr_command
         ]
         data_items = []
+        print("\033[1;32;40m \n")
         while resp.is_open():
             resp.update(timeout=1)
             if resp.peek_stdout():
-                print("STDOUT: %s" % resp.read_stdout())
+                print("STDOUT:\n")
+                print("%s" % resp.read_stdout())
                 data_items.append(resp.read_stdout if resp.read_stdout else None)
             if resp.peek_stderr():
                 print("STDERR: %s" % resp.read_stderr())
             if commands:
                 c = commands.pop(0)
-                print("Running command... %s\n" % c)
+                print("Running command: %s\n" % c)
                 resp.write_stdin(c + "\n")
             else:
                 break
@@ -64,10 +71,29 @@ def main():
     with open('run.sh', 'rb') as file:
         script = file.read()
     subprocess.call(script, shell=True)
-
     obj = PythonKubePodExecTool()
-    obj.list_all_pods_all_namespaces()
-    obj.exec_in_pod("api-pod", "default", "python --version")
+
+    print_white_on_red = lambda x: cprint(x, 'white', 'on_red')
+
+    while True:
+        print("\n")
+        print_white_on_red('########################################################')
+        print_white_on_red('#######   SELECT ANY OF THE FOLLOWING OPTION   #########')
+        print_white_on_red('########################################################')
+        print("\n")
+        cprint("1. TO SEE ALL THE PODS", 'blue', attrs=['bold'], file=sys.stderr)
+        cprint("2. TO EXEC INTO A POD", 'blue', attrs=['bold'], file=sys.stderr)
+        cprint("0. TO EXIT", 'blue', attrs=['bold'], file=sys.stderr)
+        num = input("\nEnter number: ")
+        if num == '1':
+            obj.list_all_pods_all_namespaces()
+        if num == '2':
+            cmd = input("\nEnter the command you wish to execute: ")
+            if not cmd:
+                cmd = "python --version"
+            obj.exec_in_pod("api-pod", "default", cmd)
+        if num == '0':
+            break
 
 
 if __name__ == '__main__':
