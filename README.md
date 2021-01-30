@@ -28,6 +28,7 @@ http://localhost:32000/
 ### 2. EXECUTING DJANGO APPLICATION
 - **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo 
   ( you can build, run and push the image in your own Docker hub repo and make the necessary changes in the pod.yaml)
+  
 ````
 cd django_project
 kubectl apply -f pod.yaml
