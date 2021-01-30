@@ -1,3 +1,4 @@
 kubernetes
 colorama
 termcolor
+tabulate
