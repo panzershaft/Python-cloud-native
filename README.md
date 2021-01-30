@@ -1,5 +1,5 @@
 # Python-cloud-native
-Simple python code, which can be deployed on a kuberenetes environment
+Simple python flask and django pods for a k8s cluster, which can be deployed on a kuberenetes environment
 
 ## Pre-requisites 
 
