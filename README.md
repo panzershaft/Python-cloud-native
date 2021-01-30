@@ -16,7 +16,7 @@ Simple python flask and django pods for a k8s cluster, which can be deployed on 
 ### 1. EXECUTING FLASK APPLICATION
 - **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo 
   ( you can build, run and push the image in your own Docker hub repo and make the necessary changes in the pod.yaml)
-````buildoutcfg
+````
 cd flask_app
 kubectl apply -f pod.yaml
 kubectl apply -f nodeport.yaml
@@ -28,7 +28,7 @@ http://localhost:32000/
 ### 2. EXECUTING DJANGO APPLICATION
 - **NOTE**: In the pod.yaml file, the image is getting pulled from a Docker Hub repo 
   ( you can build, run and push the image in your own Docker hub repo and make the necessary changes in the pod.yaml)
-````buildoutcfg
+````
 cd django_project
 kubectl apply -f pod.yaml
 kubectl apply -f nodeport.yaml
@@ -42,8 +42,8 @@ http://localhost:31000/
 - Ensure you have kubernetes library of python installed: https://github.com/kubernetes-client/python
 
 - Run the top two pods:
-````buildoutcfg
-python list_all_pods.py 
+````
+python PythonKubePodExecTool.py 
 or 
-python3 list_all_pods.py
+python3 PythonKubePodExecTool.py
 ````
